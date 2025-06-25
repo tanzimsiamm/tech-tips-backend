@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import router from './routes';
 
 const app = express()
 
@@ -11,7 +12,7 @@ app.use(cors( {origin: "*"}));
 // app.use(cors({origin: "https://trend-tweaks.vercel.app"}));
 
 // use router
-// app.use('/api', router)
+app.use('/api', router)
 
 
 
