@@ -1,7 +1,7 @@
 
 import app from "./app";
 import mongoose from "mongoose";
-import config from "./config";
+import config from "./interface";
 
 //  run server and connect with mongodb by mongoose 
 

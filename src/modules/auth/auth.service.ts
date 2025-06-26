@@ -3,7 +3,7 @@ import { TUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import { TLoginUser } from "./auth.interface";
 import jwt from 'jsonwebtoken'
-import config from "../../config";
+import config from "../../interface";
 import AppError from "../../errors/AppError";
 
 
@@ -30,7 +30,7 @@ const createUserIntoDB = async (payload : TUser) => {
          _id : user._id,
          memberShip : user?.memberShip,
      }
-    const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : config.jwt_access_expires});
+    const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : config.jwt_access_expires}as jwt.SignOptions);
 
     return { user, token}
         }
@@ -43,7 +43,7 @@ const createUserIntoDB = async (payload : TUser) => {
          _id : userData._id,
          memberShip : userData?.memberShip,
         }
-    const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : config.jwt_access_expires});
+    const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : config.jwt_access_expires}as jwt.SignOptions);
 
     return { userData, token}
         }
@@ -75,7 +75,7 @@ const loginUser = async (payload: TLoginUser) => {
         _id : user._id,
         memberShip : user?.memberShip, 
     }
-    const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : config.jwt_access_expires});
+    const token = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn : config.jwt_access_expires}as jwt.SignOptions);
 
     user.password = ""
     return { user, token}
