@@ -1,83 +1,79 @@
-
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import httpStatus from 'http-status'
+import httpStatus from "http-status";
 import { postServices } from "./post.service";
 
+const createPost = catchAsync(async (req, res) => {
+  const result = await postServices.createPostIntoDB(req.body);
 
-const createPost = catchAsync (async (req, res) => {
-   const result = await postServices.createPostIntoDB(req.body);
-   
-   sendResponse(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Post created successfully',
+    message: "Post created successfully",
     data: result,
   });
-})
+});
 
+const votePost = catchAsync(async (req, res) => {
+  const result = await postServices.voteToPost(req.body);
 
-const votePost = catchAsync (async (req, res) => {
-   const result = await postServices.voteToPost(req.body);
-   
-   sendResponse(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Voted successfully',
+    message: "Voted successfully",
     data: result,
   });
-})
+});
 
-const getAllPosts = catchAsync (async (req, res) => {
+const getAllPosts = catchAsync(async (req, res) => {
+  const result = await postServices.getAllPostsFromDB(req.query);
 
-   const result = await postServices.getAllPostsFromDB(req.query);
-   
-   sendResponse(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Posts retrieved successfully',
+    message: "Posts retrieved successfully",
     data: result,
   });
-})
+});
 
+const getSinglePost = catchAsync(async (req, res) => {
+  const result = await postServices.getSinglePostFromDB(req.params.id);
 
-const getSinglePost = catchAsync (async (req, res) => {
-
-   const result = await postServices.getSinglePostFromDB(req.params.id);
-   
-   sendResponse(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'A Post retrieved successfully',
+    message: "A Post retrieved successfully",
     data: result,
   });
-})
+});
 
-const updatePost = catchAsync (async (req, res) => {
-   const result = await postServices.updatePostIntoDB(req.params.id , req.body);
-   
-   sendResponse(res, {
+const updatePost = catchAsync(async (req, res) => {
+  const result = await postServices.updatePostIntoDB(req.params.id, req.body);
+
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Post updated successfully',
+    message: "Post updated successfully",
     data: result,
   });
-})
+});
 
+const deletePost = catchAsync(async (req, res) => {
+  const result = await postServices.deletePostFromDB(req.params.id);
 
-const deletePost = catchAsync (async (req, res) => {
-   const result = await postServices.deletePostFromDB(req.params.id);
-   
-   sendResponse(res, {
+  sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Post deleted successfully',
+    message: "Post deleted successfully",
     data: result,
   });
-})
-
-
+});
 
 export const postControllers = {
-    createPost, getAllPosts, getSinglePost, updatePost, deletePost, votePost
-}
+  createPost,
+  getAllPosts,
+  getSinglePost,
+  updatePost,
+  deletePost,
+  votePost,
+};

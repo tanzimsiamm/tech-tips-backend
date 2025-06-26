@@ -1,44 +1,43 @@
 import { Schema, model } from "mongoose";
 import { TUser } from "./user.interface";
 
-const userSchema = new Schema <TUser>({
+const userSchema = new Schema<TUser>(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    email : {
-        type : String,
-        required : true,
+    email: {
+      type: String,
+      required: true,
     },
-    role : {
-        type : String,
-        required : true,
-        enum : ['user','admin']
+    role: {
+      type: String,
+      required: true,
+      enum: ["user", "admin"],
     },
-    password : {
-        type : String,
+    password: {
+      type: String,
     },
-    followers: [
-        { type: Schema.Types.ObjectId, ref: 'User' }]
-        ,
-    following: [
-        { type: Schema.Types.ObjectId, ref: 'User' }
-    ],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
     memberShip: {
-        type: Schema.Types.Mixed, // Allows either 'null' or an object
-        default: null
+      type: Schema.Types.Mixed, // Allows either 'null' or an object
+      default: null,
     },
-    image : {
-        type : String,
-        required : true,
+    image: {
+      type: String,
+      required: true,
     },
-    coverImg : {
-        type : String,
+    coverImg: {
+      type: String,
     },
-    isBlocked : {
-        type : Boolean,
-        default : false,
-    }
-}, { timestamps : true })
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
-export const User = model <TUser> ('User', userSchema);
+export const User = model<TUser>("User", userSchema);

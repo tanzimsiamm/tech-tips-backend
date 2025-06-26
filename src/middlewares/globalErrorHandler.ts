@@ -1,22 +1,22 @@
-import { ErrorRequestHandler } from 'express';
-import { ZodError } from 'zod';
-import AppError from '../errors/AppError';
-import handleCastError from '../errors/handleCastError';
-import handleDuplicateError from '../errors/handleDuplicateError';
-import handleValidationError from '../errors/handleValidationError';
-import handleZodError from '../errors/handleZodError';
-import { TErrorMessages } from '../interface/error';
-import mongoose from 'mongoose';
-import config from '../config';
+import { ErrorRequestHandler } from "express";
+import { ZodError } from "zod";
+import AppError from "../errors/AppError";
+import handleCastError from "../errors/handleCastError";
+import handleDuplicateError from "../errors/handleDuplicateError";
+import handleValidationError from "../errors/handleValidationError";
+import handleZodError from "../errors/handleZodError";
+import { TErrorMessages } from "../interface/error";
+import mongoose from "mongoose";
+import config from "../config";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // Setting default values
   let statusCode = 500;
-  let message = 'Something went wrong!';
+  let message = "Something went wrong!";
   let errorMessages: TErrorMessages = [
     {
-      path: '',
-      message: 'Something went wrong',
+      path: "",
+      message: "Something went wrong",
     },
   ];
 
@@ -45,7 +45,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     message = err.message;
     errorMessages = [
       {
-        path: '',
+        path: "",
         message: err?.message,
       },
     ];
@@ -53,7 +53,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     message = err.message;
     errorMessages = [
       {
-        path: '',
+        path: "",
         message: err?.message,
       },
     ];
@@ -64,7 +64,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false,
     message,
     errorMessages,
-    stack:config.NODE_ENV  === 'development' ? err?.stack : null,
+    stack: config.NODE_ENV === "development" ? err?.stack : null,
   });
 };
 
