@@ -5,7 +5,7 @@ import { cloudinaryUpload } from "../../config/cloudinary.config";
 
 const router = express.Router();
 
-// ✅ Cloudinary storage config
+// Cloudinary storage config
 const storage = new CloudinaryStorage({
   cloudinary: cloudinaryUpload,
   params: async (req, file) => ({
@@ -16,7 +16,7 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-// ✅ Upload route
+// Upload route
 router.post("/", upload.single("image"), async (req, res): Promise<void> => {
   if (!req.file) {
     res.status(400).json({ success: false, message: "No image uploaded" });

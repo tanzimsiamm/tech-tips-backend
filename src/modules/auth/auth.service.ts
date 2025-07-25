@@ -6,21 +6,25 @@ import jwt from "jsonwebtoken";
 import AppError from "../../errors/AppError";
 import config from "../../config";
 
+// Handles both password and social auth registration
 const createUserIntoDB = async (payload: TUser) => {
   const user = await User.findOne({ email: payload.email });
 
+  // Password-based registration flow
   if (payload?.password) {
-    // check user existence
     if (user) {
       throw new AppError(httpStatus.FORBIDDEN, "already exist");
     }
 
     const userData = await User.create(payload);
-    if (userData?.password) userData.password = "";
+    if (userData?.password) userData.password = ""; // Remove password before returning
     return userData;
-  } else {
+  }
+
+  // Social auth flow
+  else {
     if (user) {
-      // create a token for user
+      // Return existing user with token
       const jwtPayload = {
         email: user.email,
         role: user.role,
@@ -35,8 +39,8 @@ const createUserIntoDB = async (payload: TUser) => {
 
       return { user, token };
     } else {
+      // Create new user with token
       const userData = await User.create(payload);
-      // create a token for user
       const jwtPayload = {
         email: userData.email,
         role: userData.role,
@@ -54,21 +58,22 @@ const createUserIntoDB = async (payload: TUser) => {
   }
 };
 
+// Handles user authentication
 const loginUser = async (payload: TLoginUser) => {
   const user = await User.findOne({ email: payload.email });
 
-  // check user existence
   if (!user) {
     throw new AppError(httpStatus.UNAUTHORIZED, "user not exist");
   }
-  // check password if it exists
+
+  // Validate password if account has one
   if (user?.password) {
     if (user.password !== payload.password) {
       throw new AppError(httpStatus.UNAUTHORIZED, "Password incorrect");
     }
   }
 
-  // create a token for user
+  // Generate JWT token
   const jwtPayload = {
     email: user.email,
     role: user.role,
@@ -81,7 +86,7 @@ const loginUser = async (payload: TLoginUser) => {
     { expiresIn: config.jwt_access_expires } as jwt.SignOptions
   );
 
-  user.password = "";
+  user.password = ""; // Never return password hash
   return { user, token };
 };
 

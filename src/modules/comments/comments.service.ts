@@ -1,31 +1,35 @@
 import { TComment } from "./comments.interface";
 import { Comment } from "./comments.model";
 
+/**
+ * Adds a new comment to the database
+ */
 const addCommentToDB = async (payload: TComment) => {
-  const result = await Comment.create(payload);
-  return result;
+  return await Comment.create(payload);
 };
 
+/**
+ * Gets all comments for a specific post, sorted by newest first
+ */
 const getCommentsFromDB = async (postId: string) => {
-  const result = await Comment.find({ postId }).sort({
-    createdAt: "descending",
-  });
-  return result;
+  return await Comment.find({ postId }).sort({ createdAt: "descending" });
 };
 
+/**
+ * Permanently deletes a comment by ID
+ */
 const deleteCommentFromDB = async (commentId: string) => {
-  const result = await Comment.findByIdAndDelete(commentId);
-  return result;
+  return await Comment.findByIdAndDelete(commentId);
 };
 
+/**
+ * Updates an existing comment and returns the modified version
+ */
 const updateCommentIntoDB = async (
   commentId: string,
   payload: Partial<TComment>
 ) => {
-  const result = await Comment.findByIdAndUpdate(commentId, payload, {
-    new: true,
-  });
-  return result;
+  return await Comment.findByIdAndUpdate(commentId, payload, { new: true });
 };
 
 export const commentServices = {

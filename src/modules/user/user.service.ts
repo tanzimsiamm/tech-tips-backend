@@ -1,89 +1,88 @@
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
-const getAllUsersFromDB = async (role: string) => {
-  let query = {};
-  if (role) {
-    query = { role };
-  }
+// User Service Methods
 
-  const result = await User.find(query);
-  return result;
+/**
+ * Fetches all users with optional role-based filtering
+ * Uses empty query if no role specified (returns all users)
+ */
+const getAllUsersFromDB = async (role: string) => {
+  const query = role ? { role } : {};
+  return await User.find(query);
 };
 
+/**
+ * Gets single user by email with populated follower/following data
+ * Useful for profile pages and social connections
+ */
 const getSingleUserFromDB = async (email: string) => {
-  const result = await User.findOne({ email })
+  return await User.findOne({ email })
     .populate("followers")
     .populate("following");
-  return result;
 };
 
+/**
+ * Updates user document with partial data
+ * Returns the updated document ({new: true})
+ */
 const updateUserIntoDB = async (id: string, payload: Partial<TUser>) => {
-  const result = await User.findByIdAndUpdate(id, payload, { new: true });
-  return result;
+  return await User.findByIdAndUpdate(id, payload, { new: true });
 };
 
+/**
+ * Handles bidirectional follow relationship between users
+ * Uses $addToSet to prevent duplicate follows
+ */
 const followUser = async (payload: {
   userId: string;
   targetedUserId: string;
 }) => {
   const { userId, targetedUserId } = payload;
 
-  // update the user who will be followed
-  const result = await User.findByIdAndUpdate(
+  // Transaction-like update of both users' relationships
+  await User.findByIdAndUpdate(
     targetedUserId,
-    {
-      $push: { followers: userId },
-    },
+    { $addToSet: { followers: userId } },
     { new: true }
   );
 
-  // update the user who requested to follow
-  if (result) {
-    const response = await User.findByIdAndUpdate(
-      userId,
-      {
-        $addToSet: { following: targetedUserId },
-      },
-      { new: true }
-    );
-    return response;
-  }
-  return result;
+  return await User.findByIdAndUpdate(
+    userId,
+    { $addToSet: { following: targetedUserId } },
+    { new: true }
+  );
 };
 
+/**
+ * Removes follow relationship in both directions
+ * Uses $pull to remove references from both users
+ */
 const unFollowUser = async (payload: {
   userId: string;
   targetedUserId: string;
 }) => {
   const { userId, targetedUserId } = payload;
 
-  // update the user who will be unFollowed
-  const result = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     targetedUserId,
-    {
-      $pull: { followers: userId },
-    },
+    { $pull: { followers: userId } },
     { new: true }
   );
 
-  // update the user who requested to unfollow
-  if (result) {
-    const response = await User.findByIdAndUpdate(
-      userId,
-      {
-        $pull: { following: targetedUserId },
-      },
-      { new: true }
-    );
-    return response;
-  }
-  return result;
+  return await User.findByIdAndUpdate(
+    userId,
+    { $pull: { following: targetedUserId } },
+    { new: true }
+  );
 };
 
+/**
+ * Permanently deletes user by ID
+ * Note: Consider soft delete for production applications
+ */
 const deleteUserFromDB = async (id: string) => {
-  const result = await User.findByIdAndDelete(id);
-  return result;
+  return await User.findByIdAndDelete(id);
 };
 
 export const userServices = {

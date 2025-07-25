@@ -1,21 +1,23 @@
 import express from "express";
 import auth from "../../middlewares/auth";
 import { commentController } from "./comments.controller";
+
 const router = express.Router();
 
+// Public routes
 router.get("/:postId", auth("user", "admin"), commentController.getComments);
-router.delete(
-  "/:commentId",
-  auth("user", "admin"),
-  commentController.deleteComment
-);
+
+// Protected routes (require authentication)
+router.post("/", auth("admin", "user"), commentController.addComment);
 router.patch(
   "/:commentId",
   auth("admin", "user"),
   commentController.updateComment
 );
-
-// add comments
-router.post("/", auth("admin", "user"), commentController.addComment);
+router.delete(
+  "/:commentId",
+  auth("user", "admin"),
+  commentController.deleteComment
+);
 
 export const CommentRoutes = router;

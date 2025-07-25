@@ -23,9 +23,9 @@ const voteToPost = async (payload: {
     // If the user has already voted and tries to change their vote
     if (existingVote.voteType !== voteType) {
       if (voteType === "upvote") {
-        post!.votes! += 2; // Change from downvote (-1) to upvote (+1), so +2
+        post!.votes! += 2;
       } else if (voteType === "downvote") {
-        post!.votes! -= 2; // Change from upvote (+1) to downvote (-1), so -2
+        post!.votes! -= 2;
       }
 
       // Update the vote type in the voters array
@@ -44,9 +44,9 @@ const voteToPost = async (payload: {
     post!.voters!.push({ userId, voteType });
 
     if (voteType === "upvote") {
-      post!.votes! += 1; // Increment votes by 1 for upvote
+      post!.votes! += 1;
     } else if (voteType === "downvote") {
-      post!.votes! -= 1; // Decrease votes by 1 for downvote
+      post!.votes! -= 1;
     }
   }
 
@@ -57,15 +57,6 @@ const voteToPost = async (payload: {
 
 const getAllPostsFromDB = async (query: TPostsQuery) => {
   const filter: Record<string, unknown> = {};
-
-  //  {
-  // searchTerm : 'tangail'
-  // userEmail : '@gmil.com'
-  // category : 'Ai'
-  // sortByUpvote : -1
-  // skip : 0
-  // limit : 10
-  //  }
 
   // Add search value to filter if provided
   if (query.searchTerm) {
