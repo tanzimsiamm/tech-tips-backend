@@ -4,7 +4,11 @@ import { paymentControllers } from "./payment.controller";
 const router = express.Router();
 
 // create payment intent for user
-router.post("/create-payment-intent", paymentControllers.createPaymentIntent);
+router.post(
+  "/create-payment-intent", 
+  auth("user", "admin"),
+  paymentControllers.createPaymentIntent
+);
 
 // save payment history
 router.post("/", auth("user", "admin"), paymentControllers.savePaymentInfo);

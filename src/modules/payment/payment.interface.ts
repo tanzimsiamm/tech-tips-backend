@@ -2,7 +2,10 @@ export type TPayment = {
   email: string;
   cost: number;
   membersShip: {
-    package: object;
+    package: {
+  name: string;
+  features: string[];
+};
     takenDate: string;
     exp: string;
   };

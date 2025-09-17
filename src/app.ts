@@ -10,8 +10,8 @@ const app = express();
 app.use(express.json());
 
 // use cors
-// app.use(cors({ origin: "*" }));
-app.use(cors({ origin: "https://tech-tips-frontend-six.vercel.app" }));
+app.use(cors({ origin: "*" }));
+// app.use(cors({ origin: "https://tech-tips-frontend-six.vercel.app" }));
 
 // use router
 app.use("/api", router);
