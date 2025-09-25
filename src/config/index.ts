@@ -11,4 +11,17 @@ export default {
   cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
   cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
+  frontend_url: process.env.FRONTEND_URL,
+
+  // OAuth Redirects
+  google_oauth_redirect: process.env.GOOGLE_OAUTH_REDIRECT,
+  github_oauth_redirect: process.env.GITHUB_OAUTH_REDIRECT,
+
+  // Google OAuth
+  google_client_id: process.env.GOOGLE_CLIENT_ID,
+  google_client_secret: process.env.GOOGLE_CLIENT_SECRET,
+
+  // GitHub OAuth
+  github_client_id: process.env.GITHUB_CLIENT_ID,
+  github_client_secret: process.env.GITHUB_CLIENT_SECRET,
 };

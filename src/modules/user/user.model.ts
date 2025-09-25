@@ -15,6 +15,7 @@ const userSchema = new Schema<TUser>(
       type: String,
       required: true,
       enum: ["user", "admin"],
+      default: "user",
     },
     password: {
       type: String,
