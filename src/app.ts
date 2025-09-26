@@ -10,10 +10,15 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: ["http://localhost:3000", "https://tech-tips-frontend-six.vercel.app"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://tech-tips-frontend-six.vercel.app",
+    ],
+    credentials: true,
+  })
+);
 
 // Routes
 app.use("/api", router);
@@ -26,9 +31,10 @@ app.get("/", (req, res) => {
 app.use(globalErrorHandler);
 app.use(notFound);
 
-// Connect MongoDB (only once, for Vercel lazy connection)
+// Lazy MongoDB connection (works with serverless)
 if (mongoose.connection.readyState === 0) {
-  mongoose.connect(config.db_url as string)
+  mongoose
+    .connect(config.db_url as string)
     .then(() => console.log("✅ MongoDB connected"))
     .catch((err) => console.error("❌ MongoDB connection failed", err));
 }
