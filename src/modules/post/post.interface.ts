@@ -1,12 +1,14 @@
+export type TVoter = {
+  userId: string;
+  voteType: string;
+};
+
 export type TPost = {
   _id?: string;
   title: string;
   category: string;
   votes?: number;
-  voters?: {
-    userId: string;
-    voteType: string;
-  }[];
+  voters: TVoter[]; 
   description: string;
   images: string[];
   comments?: TComment[];
@@ -22,6 +24,7 @@ export type TPost = {
   createdAt?: string;
   updatedAt?: string;
 };
+
 
 export type TComment = {
   comment: string;

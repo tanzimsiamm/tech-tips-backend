@@ -11,49 +11,39 @@ const createPostIntoDB = async (payload: TPost) => {
 const voteToPost = async (payload: {
   postId: string;
   userId: string;
-  voteType: string;
+  voteType: "upvote" | "downvote";
 }) => {
   const { postId, userId, voteType } = payload;
   const post = await Post.findById(postId);
 
-  // Check if the user has already voted on this post
-  const existingVote = post?.voters?.find((voter) => voter.userId === userId);
+  if (!post) throw new Error("Post not found");
+
+  post.voters = post.voters || [];
+
+  const existingVote = post.voters.find(voter => voter.userId === userId);
 
   if (existingVote) {
-    // If the user has already voted and tries to change their vote
-    if (existingVote.voteType !== voteType) {
-      if (voteType === "upvote") {
-        post!.votes! += 2;
-      } else if (voteType === "downvote") {
-        post!.votes! -= 2;
-      }
-
-      // Update the vote type in the voters array
-      existingVote.voteType = voteType;
+    if (existingVote.voteType === voteType) {
+      // Remove vote
+      post.voters = post.voters.filter(v => v.userId !== userId);
     } else {
-      const restVoters = post?.voters?.filter(
-        (voter) => voter.userId !== userId
-      );
-      post!.voters = restVoters;
-
-      if (voteType === "downvote") post!.votes! += 1;
-      if (voteType === "upvote") post!.votes! -= 1;
+      // Change vote
+      existingVote.voteType = voteType;
     }
   } else {
-    // If the user has not voted, add a new vote
-    post!.voters!.push({ userId, voteType });
-
-    if (voteType === "upvote") {
-      post!.votes! += 1;
-    } else if (voteType === "downvote") {
-      post!.votes! -= 1;
-    }
+    // Add vote
+    post.voters.push({ userId, voteType });
   }
 
-  // Save the post with the updated vote count
-  const res = await post?.save();
-  return res;
+  // Recalculate votes
+  const upvotes = post.voters.filter(v => v.voteType === "upvote").length;
+  const downvotes = post.voters.filter(v => v.voteType === "downvote").length;
+  post.votes = upvotes - downvotes;
+
+  return await post.save();
 };
+
+
 
 const getAllPostsFromDB = async (query: TPostsQuery) => {
   const filter: Record<string, unknown> = {};
