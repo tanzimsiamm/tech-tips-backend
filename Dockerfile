@@ -31,4 +31,4 @@ ENV NODE_ENV=production
 EXPOSE 5000
 
 # Start the app
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/src/server.js"]
