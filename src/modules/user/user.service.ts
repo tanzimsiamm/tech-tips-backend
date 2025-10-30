@@ -1,3 +1,4 @@
+import { Post } from "../post/post.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
@@ -27,7 +28,33 @@ const getSingleUserFromDB = async (email: string) => {
  * Returns the updated document ({new: true})
  */
 const updateUserIntoDB = async (id: string, payload: Partial<TUser>) => {
-  return await User.findByIdAndUpdate(id, payload, { new: true });
+  // First, update the user
+  const updatedUser = await User.findByIdAndUpdate(id, payload, { new: true });
+
+  if (!updatedUser) {
+    throw new Error("User not found");
+  }
+
+  // Prepare updates for posts
+  const postUpdates: any = {};
+  
+  if (payload.image) {
+    postUpdates["authorInfo.image"] = payload.image;
+  }
+  
+  if (payload.name) {
+    postUpdates["authorInfo.name"] = payload.name;
+  }
+
+  // If there are any profile updates, update all user's posts
+  if (Object.keys(postUpdates).length > 0) {
+    await Post.updateMany(
+      { "authorInfo.authorEmail": updatedUser.email },
+      { $set: postUpdates }
+    );
+  }
+
+  return updatedUser;
 };
 
 /**

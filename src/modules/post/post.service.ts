@@ -99,6 +99,37 @@ const deletePostFromDB = async (id: string) => {
   return result;
 };
 
+const syncAuthorInfoInPosts = async (payload: {
+  authorEmail: string;
+  updates: {
+    name?: string;
+    image?: string;
+  };
+}) => {
+  const { authorEmail, updates } = payload;
+  
+  const postUpdates: any = {};
+  
+  if (updates.image) {
+    postUpdates["authorInfo.image"] = updates.image;
+  }
+  
+  if (updates.name) {
+    postUpdates["authorInfo.name"] = updates.name;
+  }
+
+  if (Object.keys(postUpdates).length === 0) {
+    return { modifiedCount: 0 };
+  }
+
+  const result = await Post.updateMany(
+    { "authorInfo.authorEmail": authorEmail },
+    { $set: postUpdates }
+  );
+
+  return result;
+};
+
 export const postServices = {
   createPostIntoDB,
   getAllPostsFromDB,
@@ -106,4 +137,5 @@ export const postServices = {
   updatePostIntoDB,
   voteToPost,
   deletePostFromDB,
+  syncAuthorInfoInPosts,
 };
